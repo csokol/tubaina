@@ -1,6 +1,8 @@
 Caelum Tubaina
 ==============
 
+[![Build Status](https://secure.travis-ci.org/csokol/tubaina.png)](http://travis-ci.org/csokol/tubaina)
+
 Summary
 -------
 
