@@ -78,7 +78,7 @@ public class LatexBibliographyGeneratorTest {
         BibliographyEntry entry = new BibliographyEntry("joao", "title", "1999", null, "article", "label", "international conference");
         Bibliography bibliography = new Bibliography(Arrays.asList(entry));
         String bib = latexBibGenerator.generateTextOf(bibliography);
-        assertFalse(bib.contains("journal = {international conference}"));
+        assertTrue(bib.contains("journal = {international conference}"));
     }
     
     @Test
