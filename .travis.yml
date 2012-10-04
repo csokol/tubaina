@@ -4,8 +4,8 @@ jdk:
   - openjdk6
 script: "gradle build"
 notifications:
-email:
-    recipients:
-        - chico.sokol@gmail.com
-    on_success: never
-    on_failure: always
+    email:
+        recipients:
+            - chico.sokol@gmail.com
+        on_success: never
+        on_failure: always
