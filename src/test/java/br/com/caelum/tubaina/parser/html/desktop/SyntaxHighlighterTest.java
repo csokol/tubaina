@@ -12,20 +12,24 @@ import org.junit.Test;
 
 import br.com.caelum.tubaina.util.CommandExecutor;
 
-public class HtmlSyntaxHighlighterTest {
+public class SyntaxHighlighterTest {
 
     private String sampleCode;
+    private CommandExecutor executor;
+    private SyntaxHighlighter highlighter;
+    private CodeCache codeCache;
 
     @Before
     public void setUp() {
-        sampleCode = "public class Foo {\n" + "public int Bar(){\n" + "return 0;\n" + "}\n" + "}";
+        this.sampleCode = "public class Foo {\n" + "public int Bar(){\n" + "return 0;\n" + "}\n" + "}";
+        this.executor = mock(CommandExecutor.class);
+        this.codeCache = mock(CodeCache.class);
+        this.highlighter = new SyntaxHighlighter(executor, SyntaxHighlighter.HTML_OUTPUT, false, codeCache);
     }
 
     @Test
     public void shouldCallPygmentsWithJavaLexer() throws Exception {
-        CommandExecutor executor = mock(CommandExecutor.class);
         String code = "public class Foo {\n" + "public int Bar(){\n" + "return 0;\n" + "}\n" + "}";
-        HtmlSyntaxHighlighter highlighter = new HtmlSyntaxHighlighter(executor);
         highlighter.highlight(code, "java", false);
         String encoding = System.getProperty("file.encoding");
         List<String> arguments = Arrays.asList("pygmentize", "-O", "encoding=" + encoding
@@ -35,8 +39,6 @@ public class HtmlSyntaxHighlighterTest {
 
     @Test
     public void shouldCallPygmentsWithNumberedLinesOption() throws Exception {
-        CommandExecutor executor = mock(CommandExecutor.class);
-        HtmlSyntaxHighlighter highlighter = new HtmlSyntaxHighlighter(executor);
         highlighter.highlight(sampleCode, "java", true);
         String encoding = System.getProperty("file.encoding");
         List<String> arguments = Arrays.asList("pygmentize", "-O", "encoding=" + encoding
@@ -46,8 +48,6 @@ public class HtmlSyntaxHighlighterTest {
 
     @Test
     public void shouldCallPygmentsWithHlLines() throws Exception {
-        CommandExecutor executor = mock(CommandExecutor.class);
-        HtmlSyntaxHighlighter highlighter = new HtmlSyntaxHighlighter(executor);
 
         List<Integer> lines = Arrays.asList(1, 2, 5);
 
@@ -58,6 +58,16 @@ public class HtmlSyntaxHighlighterTest {
         List<String> arguments = Arrays.asList("pygmentize", "-O", "encoding=" + encoding
                 + ",outencoding=UTF-8,hl_lines=1 2 5", "-f", "html", "-l", "java");
 
+        verify(executor).execute(eq(arguments), eq(sampleCode));
+    }
+    
+    @Test
+    public void shouldCallPygmentsWithLatexOutput() throws Exception {
+        this.highlighter = new SyntaxHighlighter(executor, SyntaxHighlighter.LATEX_OUTPUT, false, codeCache);
+        highlighter.highlight(sampleCode, "java", false);
+        String encoding = System.getProperty("file.encoding");
+        List<String> arguments = Arrays.asList("pygmentize", "-O", "encoding=" + encoding
+                + ",outencoding=UTF-8", "-P", "verboptions=numbersep=5pt", "-f", "latex", "-l", "java");
         verify(executor).execute(eq(arguments), eq(sampleCode));
     }
 
